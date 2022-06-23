@@ -6,14 +6,32 @@
 //
 
 import UIKit
+import Alamofire
 
 class ViewController: UIViewController {
-
+    
+    var session: Session!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        self.testPinning()
     }
-
-
+    
+    private func testPinning() {
+    
+         session = Session(delegate:CustomSessionDelegate())
+        
+        session
+            .request("https://github.com", method: .get)
+            .validate()
+            .response(completionHandler: { [weak self] response in
+                switch response.result {
+                case .success:
+                    print(response.data)
+                case .failure(let error):
+                    print(error.errorDescription)
+                }
+            })
+    }
 }
 
